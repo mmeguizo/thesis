@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+dist/
+
+# Environment
+.env
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Prisma
+.prisma/
+
+# OS
+.DS_Store
+
