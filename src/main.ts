@@ -14,12 +14,12 @@ async function bootstrap() {
   app.enableCors();
   
   // Add basic auth ONLY to Swagger UI
-  app.use(['/api-docs', '/api-docs-json'], basicAuth({
-    challenge: true,
-    users: {
-      [process.env.SWAGGER_USER]: process.env.SWAGGER_PASSWORD,
-    },
-  }));
+  // app.use(['/api-docs', '/api-docs-json'], basicAuth({
+  //   challenge: true,
+  //   users: {
+  //     [process.env.SWAGGER_USER]: process.env.SWAGGER_PASSWORD,
+  //   },
+  // }));
   
   app.useGlobalPipes(new ValidationPipe());
 
