@@ -8,7 +8,7 @@ import { Roles } from '../auth/decorators/roles.decorator';
 import { UserRole } from '@prisma/client';
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse, ApiQuery } from '@nestjs/swagger';
 import { ApiResponseDto, PaginatedResponseDto } from '../common/dto/api-response.dto';
-
+import { UpdateQuestionDto } from './dto/update-question.dto';
 @ApiTags('questions')
 @Controller('questions')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -90,7 +90,7 @@ export class QuestionController {
   @ApiResponse({ status: 200, description: 'Question updated successfully' })
   async update(
     @Param('id') id: string,
-    @Body() updateQuestionDto: CreateQuestionDto,
+    @Body() updateQuestionDto: UpdateQuestionDto,
   ): Promise<ApiResponseDto<any>> {
     const question = await this.questionService.update(id, updateQuestionDto);
     return {
