@@ -56,7 +56,7 @@ export class QuestionService {
     return question;
   }
 
-  async update(id: string, updateData: Partial<CreateQuestionDto>) {
+  async update(id: string, updateData: any) {
     try {
       return await this.prisma.question.update({
         where: { id },
