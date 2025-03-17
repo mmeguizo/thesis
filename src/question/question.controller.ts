@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Body, Param, Delete, Put, UseGuards, Query } from '@nestjs/common';
 import { QuestionService } from './question.service';
 import { CreateQuestionDto } from './dto/create-question.dto';
+import { GetQuestionsDto } from './dto/get-questions.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -30,14 +31,39 @@ export class QuestionController {
 
   @Get()
   @ApiOperation({ summary: 'Get all questions' })
-  @ApiQuery({ name: 'page', required: false, type: Number })
-  @ApiQuery({ name: 'limit', required: false, type: Number })
-  @ApiResponse({ status: 200, description: 'Returns all questions' })
-  async findAll(
-    @Query('page') page = 1,
-    @Query('limit') limit = 10,
-  ): Promise<PaginatedResponseDto<any>> {
-    const { questions, meta } = await this.questionService.findAll(+page, +limit);
+  @ApiQuery({ name: 'page', required: false, type: Number, description: 'Page number (default: 1)' })
+  @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Items per page (default: 10)' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns paginated questions list',
+    schema: {
+      example: {
+        success: true,
+        message: 'Questions retrieved successfully',
+        data: [
+          {
+            id: '507f1f77bcf86cd799439011',
+            question: 'What is 2+2?',
+            answer: '4',
+            hint: 'Think about basic addition',
+            tutorialLink: 'https://example.com/math-tutorial',
+            gradeLevel: 5,
+            subject: 'Mathematics',
+            createdAt: '2024-01-01T00:00:00.000Z',
+            updatedAt: '2024-01-01T00:00:00.000Z',
+          }
+        ],
+        meta: {
+          total: 100,
+          page: 1,
+          limit: 10,
+          totalPages: 10
+        }
+      }
+    }
+  })
+  async findAll(@Query() getQuestionsDto: GetQuestionsDto) {
+    const { questions, meta } = await this.questionService.findAll(getQuestionsDto);
     return {
       success: true,
       message: 'Questions retrieved successfully',
