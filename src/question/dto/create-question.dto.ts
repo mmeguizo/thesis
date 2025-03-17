@@ -1,8 +1,7 @@
 import { IsString, IsInt, IsOptional, Min, Max } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Prisma } from '@prisma/client';
 
-export class CreateQuestionDto implements Prisma.QuestionCreateInput {
+export class CreateQuestionDto  {
   @ApiProperty({ example: 'What is 2+2?' })
   @IsString()
   question: string;

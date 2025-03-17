@@ -2,14 +2,13 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { GetQuestionsDto } from './dto/get-questions.dto';
-import { Question, Prisma } from '@prisma/client';
 
 @Injectable()
 export class QuestionService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createQuestionDto: CreateQuestionDto): Promise<Question> {
-    const data: Prisma.QuestionCreateInput = createQuestionDto;
+  async create(createQuestionDto: CreateQuestionDto) {
+    const data = createQuestionDto;
     return this.prisma.question.create({
       data,
     });
@@ -42,7 +41,7 @@ export class QuestionService {
     };
   }
 
-  async findOne(id: string): Promise<Question> {
+  async findOne(id: string) {
     const question = await this.prisma.question.findUnique({
       where: { id },
     });
@@ -54,7 +53,7 @@ export class QuestionService {
     return question;
   }
 
-  async update(id: string, updateData: Partial<CreateQuestionDto>): Promise<Question> {
+  async update(id: string, updateData: Partial<CreateQuestionDto>) {
     try {
       return await this.prisma.question.update({
         where: { id },
