@@ -16,7 +16,7 @@ export class QuestionService {
 
   async findAll(getQuestionsDto: GetQuestionsDto) {
     const page = getQuestionsDto.page || 1;
-    const limit = getQuestionsDto.limit || 10;
+    const limit =  Number(getQuestionsDto.limit) || 10;
     const skip = (page - 1) * limit;
     
     const [total, questions] = await Promise.all([
