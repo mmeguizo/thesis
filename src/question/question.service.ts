@@ -20,8 +20,11 @@ export class QuestionService {
     const skip = (page - 1) * limit;
     
     const [total, questions] = await Promise.all([
-      this.prisma.question.count(),
+      this.prisma.question.count({
+        where: { isActive: true },
+      }),
       this.prisma.question.findMany({
+        where: { isActive: true },
         skip,
         take: limit,
         orderBy: {
@@ -43,7 +46,7 @@ export class QuestionService {
 
   async findOne(id: string) {
     const question = await this.prisma.question.findUnique({
-      where: { id },
+      where: { id,   isActive: true  },
     });
 
     if (!question) {
@@ -66,8 +69,11 @@ export class QuestionService {
 
   async remove(id: string): Promise<void> {
     try {
-      await this.prisma.question.delete({
+      await this.prisma.question.update({
         where: { id },
+        data: {
+          isActive: false,
+        },
       });
     } catch (error) {
       throw new NotFoundException(`Question with ID ${id} not found`);
