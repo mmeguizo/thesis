@@ -7,7 +7,7 @@ import { UploadModule } from './upload/upload.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { QuestionModule } from './question/question.module';
-
+import { UserQuestionModule } from './user-question/user-question.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -21,6 +21,7 @@ import { QuestionModule } from './question/question.module';
       serveRoot: '/uploads',
     }),
     QuestionModule,
+    UserQuestionModule,
   ],
   controllers: [],
   providers: [PrismaService],
