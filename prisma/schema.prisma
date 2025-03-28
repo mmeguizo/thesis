@@ -6,7 +6,6 @@ datasource db {
 generator client {
   provider = "prisma-client-js"
 }
-
 enum UserRole {
   ADMIN
   STUDENT
@@ -26,12 +25,28 @@ model User {
   updatedAt DateTime @updatedAt
 
   // RELATIONS
-  userQuestions UserQuestion[] // All question attempts by this user
-  userBadges    UserBadge[] // Badges earned by this user
+  userLessons UserLesson[] 
+  userBadges  UserBadge[]
+  userQuestions UserQuestion[]
+}
+
+model Lesson {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  title     String   
+  subject   String   
+  level     Int     
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // RELATIONS
+  questions Question[]
+  userLessons UserLesson[]
 }
 
 model Question {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  lessonId     String   @db.ObjectId
   question     String
   answer       String
   hint         String?
@@ -43,28 +58,46 @@ model Question {
   updatedAt    DateTime @updatedAt
 
   // RELATIONS
-  lessonId      String?        @db.ObjectId
-  lesson        Lesson?        @relation(fields: [lessonId], references: [id])
-  userQuestions UserQuestion[]
+  lesson      Lesson   @relation(fields: [lessonId], references: [id])
+  userQuestions UserQuestion[] 
 }
 
-model Lesson {
+model UserQuestion {
+  id         String @id @default(auto()) @map("_id") @db.ObjectId
+  userId     String @db.ObjectId
+  questionId String @db.ObjectId
+  starRating Int? // 0, 1, 2, 3 (null if not completed)
+  timeSpent  Int?
+  isCorrect  Boolean @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // RELATIONS
+  user     User     @relation(fields: [userId], references: [id])
+  question Question @relation(fields: [questionId], references: [id])
+}
+
+model UserLesson {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  title     String // e.g. "Math Level 1"
-  subject   String // e.g. "Math"
-  level     Int // e.g. 1, 2, etc.
-  isActive  Boolean  @default(true)
+  userId    String   @db.ObjectId
+  lessonId  String   @db.ObjectId
+  totalStars Int     @default(0) // Sum of all stars from questions
+  completed  Boolean @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   // RELATIONS
-  questions Question[]
+  user   User   @relation(fields: [userId], references: [id])
+  lesson Lesson @relation(fields: [lessonId], references: [id])
 }
+
+
 
 model Badge {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  name        String // e.g. "Bronze", "Silver", "Gold"
+  name        String // Bronze, Silver, Gold
   description String?
+  minStars    Int // Required stars for this badge
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -85,86 +118,7 @@ model UserBadge {
   // RELATIONS
   user  User  @relation(fields: [userId], references: [id])
   badge Badge @relation(fields: [badgeId], references: [id])
-
-  // New field to track total stars earned
-  totalStars Int @default(0)
 }
 
-model UserQuestion {
-  id         String @id @default(auto()) @map("_id") @db.ObjectId
-  userId     String @db.ObjectId
-  questionId String @db.ObjectId
 
-  // This can store the number of stars the user earned for this question
-  starRating Int? // 0, 1, 2, 3 (null if not completed yet)
 
-  // Track how long it took (in seconds) to answer, if needed
-  timeSpent Int?
-
-  // Maybe track if the user answered correctly or not
-  isCorrect Boolean @default(false)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // RELATIONS
-  user     User     @relation(fields: [userId], references: [id])
-  question Question @relation(fields: [questionId], references: [id])
-}
-
-//***********************old files *****************
-
-// datasource db {
-//   provider = "mongodb"
-//   url      = env("DATABASE_URL")
-// }
-
-// generator client {
-//   provider = "prisma-client-js"
-// }
-
-// enum UserRole {
-//   ADMIN
-//   STUDENT
-//   TEACHER
-// }
-
-// model User {
-//   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-//   username  String   @unique
-//   password  String
-//   firstName String?
-//   lastName  String?
-//   avatar    String?
-//   isActive  Boolean  @default(true)
-//   role      UserRole @default(STUDENT)
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-// }
-
-// model Question {
-//   id           String   @id @default(auto()) @map("_id") @db.ObjectId
-//   question     String
-//   answer       String
-//   hint         String?
-//   tutorialLink String?
-//   gradeLevel   Int
-//   subject      String
-//   isActive     Boolean  @default(true)
-//   createdAt    DateTime @default(now())
-//   updatedAt    DateTime @updatedAt
-// }
-
-// model Badge {
-//   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-//   isActive     Boolean  @default(true)
-//   createdAt    DateTime @default(now())
-//   updatedAt    DateTime @updatedAt
-// }
-
-// model Lesson {
-//   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-//   isActive  Boolean  @default(true)
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-// }

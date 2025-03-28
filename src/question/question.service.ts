@@ -3,9 +3,13 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { GetQuestionsDto } from './dto/get-questions.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
+import { UserLessonService } from '../user-lesson/user-lesson.service';
+import { SubmitAnswerDto } from './dto/submit-answer.dto';
+
+
 @Injectable()
 export class QuestionService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService ,  private userLessonService: UserLessonService,) {}
 
   async create(createQuestionDto: CreateQuestionDto) {
     const data = createQuestionDto;
@@ -13,6 +17,34 @@ export class QuestionService {
       data,
     });
   }
+
+  async submitAnswer(userId: string, dto: SubmitAnswerDto) {
+    const { questionId, answer, timeSpent } = dto;
+
+    const question = await this.prisma.question.findUnique({ where: { id: questionId } });
+    if (!question) throw new NotFoundException('Question not found.');
+
+    const isCorrect = question.answer.toLowerCase() === answer.toLowerCase();
+
+    let starRating = 0;
+    if (isCorrect) {
+      if (timeSpent <= 5) starRating = 3;
+      else if (timeSpent <= 10) starRating = 2;
+      else starRating = 1;
+    }
+
+    await this.prisma.userQuestion.create({
+      data: { userId, questionId, starRating, timeSpent, isCorrect },
+    });
+
+    // ✅ Update lesson stars
+    if (question.lessonId) {
+      await this.userLessonService.updateLessonStars(userId, question.lessonId, starRating);
+    }
+
+    return { isCorrect, starRating };
+  }
+
 
   async findAll(getQuestionsDto: GetQuestionsDto) {
     const page = getQuestionsDto.page || 1;

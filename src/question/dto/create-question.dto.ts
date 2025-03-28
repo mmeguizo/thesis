@@ -29,4 +29,8 @@ export class CreateQuestionDto  {
   @ApiProperty({ example: 'Mathematics' })
   @IsString()
   subject: string;
+
+  @ApiProperty({ example: '60d5f484f1c2b8b1c8e4e4e4' }) // Example ObjectId
+  @IsString()
+  lessonId: string; // Added lessonId field
 }

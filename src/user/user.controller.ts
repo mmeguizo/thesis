@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Query, UseGuards, UseInterceptors, UploadedFile, MaxFileSizeValidator, ParseFilePipe, Delete, Param, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query, Put, UseGuards, UseInterceptors, UploadedFile, MaxFileSizeValidator, ParseFilePipe, Delete, Param, NotFoundException, BadRequestException } from '@nestjs/common';
 import { UserService } from './user.service';
 import { GetUsersDto } from './dto/get-users.dto';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -11,7 +11,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import * as fs from 'fs';
-
+import { UpdateUserDto } from './dto/update-user.dto';
 @ApiTags('users')
 @Controller('users')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -124,5 +124,15 @@ export class UserController {
     }
     
     throw new NotFoundException('File not found');
+  }
+
+  @Put(':id/password')
+  @ApiOperation({ summary: 'Update user password' })
+  @ApiResponse({ status: 200, description: 'Password updated successfully' })
+  async updatePassword(@Param('id') userId: string, @Body() newPassword: UpdateUserDto) {
+    if (!newPassword) {
+      throw new BadRequestException('New password is required');
+    }
+    return this.userService.updatePassword(userId, newPassword);
   }
 } 
