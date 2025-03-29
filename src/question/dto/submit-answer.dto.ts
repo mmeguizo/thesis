@@ -10,4 +10,7 @@ export class SubmitAnswerDto {
   @IsInt()
   @Min(0)
   timeSpent: number;
+  
+  @IsString()
+  subjectId: string;
 }

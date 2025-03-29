@@ -13,6 +13,7 @@ import { BadgeModule } from './badge/badge.module';
 import { UserProgressModule } from './user-progress/user-progress.module';
 import { LessonModule } from './lesson/lesson.module';
 import { SubjectModule } from './subject/subject.module';
+import { AnswerModule } from './answer/answer.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -32,6 +33,7 @@ import { SubjectModule } from './subject/subject.module';
     UserProgressModule,
     LessonModule,
     SubjectModule,
+    AnswerModule,
   ],
   controllers: [],
   providers: [PrismaService],

@@ -5,13 +5,11 @@ import { PrismaService } from '../prisma/prisma.service';
 export class UserQuestionService {
   constructor(private prisma: PrismaService) {}
 
-  async getTotalStarsForSubject(userId: string, subject: string): Promise<number> {
+  async getTotalStarsForSubject(userId: string, subjectId: string): Promise<number> {
     const userQuestions = await this.prisma.userQuestion.findMany({
       where: {
         userId,
-        question: {
-          subject,
-        },
+        subjectId
       },
       select: {
         starRating: true,

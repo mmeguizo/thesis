@@ -26,15 +26,15 @@ export class UserQuestionController {
     example: '507f1f77bcf86cd799439011' // Example user ID
   })
   @ApiQuery({ 
-    name: 'subject', 
+    name: 'subjectId', 
     required: true, 
     type: String, 
-    description: 'Subject to query stars for', 
-    example: 'Math' // Example subject
+    description: 'Subject Id', 
+    example: '507f1f77bcf86cd799439011' // Example subject
   })
   async getTotalStars(@Query() getUserStarsDto: GetUserStarsDto) {
-    const { userId, subject } = getUserStarsDto;
-    const totalStars = await this.userQuestionService.getTotalStarsForSubject(userId, subject);
+    const { userId, subjectId } = getUserStarsDto;
+    const totalStars = await this.userQuestionService.getTotalStarsForSubject(userId, subjectId);
     return { totalStars };
   }
   }

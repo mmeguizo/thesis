@@ -39,7 +39,9 @@ model Subject {
   updatedAt DateTime @updatedAt
 
   // RELATIONS
-  lessons Lesson[]
+  lessons      Lesson[]
+  // question     Question[]
+  UserQuestion UserQuestion[]
 }
 
 model Lesson {
@@ -57,20 +59,6 @@ model Lesson {
   userLessons UserLesson[]
 }
 
-// model Lesson {
-//   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-//   title     String   
-//   subject   String   
-//   level     Int     
-//   isActive  Boolean  @default(true)
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-
-//   // RELATIONS
-//   questions Question[]
-//   userLessons UserLesson[]
-// }
-
 model Question {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   lessonId     String   @db.ObjectId
@@ -79,13 +67,15 @@ model Question {
   hint         String?
   tutorialLink String?
   gradeLevel   Int
-  subject      String
   isActive     Boolean  @default(true)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  timeLimit  Int? // Time limit in seconds (null if no time limit) // Time limit in seconds (e.g., 180 = 3 minutes)
 
   // RELATIONS
+  // subjectId     String         @db.ObjectId
   lesson        Lesson         @relation(fields: [lessonId], references: [id])
+  // subject       Subject        @relation(fields: [lessonId], references: [id])
   userQuestions UserQuestion[]
 }
 
@@ -93,15 +83,16 @@ model UserQuestion {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
   userId     String   @db.ObjectId
   questionId String   @db.ObjectId
+  subjectId  String   @db.ObjectId
   starRating Int? // 0, 1, 2, 3 (null if not completed)
   timeSpent  Int?
   isCorrect  Boolean  @default(false)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-
   // RELATIONS
-  user     User     @relation(fields: [userId], references: [id])
-  question Question @relation(fields: [questionId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+  subject    Subject  @relation(fields: [subjectId], references: [id])
+  question   Question @relation(fields: [questionId], references: [id])
 }
 
 model UserLesson {

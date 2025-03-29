@@ -5,5 +5,5 @@ export class GetUserStarsDto {
   userId: string;
 
   @IsString()
-  subject: string;
+  subjectId: string;
 }

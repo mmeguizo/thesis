@@ -11,15 +11,17 @@ import { SubmitAnswerDto } from './dto/submit-answer.dto';
 export class QuestionService {
   constructor(private prisma: PrismaService ,  private userLessonService: UserLessonService,) {}
 
-  async create(createQuestionDto: CreateQuestionDto) {
+  async create(createQuestionDto: any) {
     const data = createQuestionDto;
     return this.prisma.question.create({
       data,
     });
   }
 
+ 
+
   async submitAnswer(userId: string, dto: SubmitAnswerDto) {
-    const { questionId, answer, timeSpent } = dto;
+    const { questionId, subjectId, answer, timeSpent,  } = dto;
 
     const question = await this.prisma.question.findUnique({ where: { id: questionId } });
     if (!question) throw new NotFoundException('Question not found.');
@@ -34,7 +36,7 @@ export class QuestionService {
     }
 
     await this.prisma.userQuestion.create({
-      data: { userId, questionId, starRating, timeSpent, isCorrect },
+      data: { userId, questionId, subjectId, starRating, timeSpent, isCorrect },
     });
 
     // ✅ Update lesson stars
@@ -62,8 +64,8 @@ export class QuestionService {
         orderBy: {
           createdAt: 'desc',
         },
-      }),
-    ]);
+      }) || [],
+    ])  // Return an empty array if no data is found
 
     return {
       questions,

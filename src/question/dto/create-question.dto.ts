@@ -1,36 +1,48 @@
-import { IsString, IsInt, IsOptional, Min, Max } from 'class-validator';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsString, IsMongoId, IsInt, Min } from 'class-validator';
 
-export class CreateQuestionDto  {
-  @ApiProperty({ example: 'What is 2+2?' })
+export class CreateQuestionDto {
+  @ApiProperty({
+    description: 'Question text',
+    example: 'What is 2 + 2?',
+    required: true,
+  })
   @IsString()
   question: string;
 
-  @ApiProperty({ example: '4' })
+  @ApiProperty({
+    description: 'Correct answer',
+    example: '4',
+    required: true,
+  })
   @IsString()
   answer: string;
-
-  @ApiPropertyOptional({ example: 'Think about basic addition' })
-  @IsString()
-  @IsOptional()
-  hint?: string;
-
-  @ApiPropertyOptional({ example: 'https://example.com/math-tutorial' })
-  @IsString()
-  @IsOptional()
-  tutorialLink?: string;
-
-  @ApiProperty({ example: 5 })
+  
+  @ApiProperty({
+    description: 'Time limit to answer in seconds',
+    example: 180, // 3 minutes
+    required: true,
+  })
   @IsInt()
-  @Min(1)
-  @Max(12)
+  @Min(10) // Minimum 10 seconds to prevent too-short time
+  timeLimit: number;
+  
+  @ApiProperty({
+    description: 'Grade level of the question',
+    example: 7, // 3 minutes
+    required: true,
+  })
+  @IsInt()
+  @Min(7) // Minimum 10 seconds to prevent too-short time
   gradeLevel: number;
 
-  @ApiProperty({ example: 'Mathematics' })
-  @IsString()
-  subject: string;
+  @ApiProperty({
+    description: 'Lesson ID of the question',
+    example: '6611a5f7e892be3456a6a7e2',
+    required: true,
+  })
+  @IsMongoId()
+  lessonId: string;
 
-  @ApiProperty({ example: '60d5f484f1c2b8b1c8e4e4e4' }) // Example ObjectId
-  @IsString()
-  lessonId: string; // Added lessonId field
+
 }
