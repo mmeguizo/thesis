@@ -6,6 +6,7 @@ datasource db {
 generator client {
   provider = "prisma-client-js"
 }
+
 enum UserRole {
   ADMIN
   STUDENT
@@ -25,24 +26,50 @@ model User {
   updatedAt DateTime @updatedAt
 
   // RELATIONS
-  userLessons UserLesson[] 
-  userBadges  UserBadge[]
+  userLessons   UserLesson[]
+  userBadges    UserBadge[]
   userQuestions UserQuestion[]
 }
 
-model Lesson {
+model Subject {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  title     String   
-  subject   String   
-  level     Int     
+  name      String   @unique
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   // RELATIONS
-  questions Question[]
+  lessons Lesson[]
+}
+
+model Lesson {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  title     String
+  level     Int
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // RELATIONS
+  subjectId   String       @db.ObjectId
+  subject     Subject      @relation(fields: [subjectId], references: [id])
+  questions   Question[]
   userLessons UserLesson[]
 }
+
+// model Lesson {
+//   id        String   @id @default(auto()) @map("_id") @db.ObjectId
+//   title     String   
+//   subject   String   
+//   level     Int     
+//   isActive  Boolean  @default(true)
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   // RELATIONS
+//   questions Question[]
+//   userLessons UserLesson[]
+// }
 
 model Question {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
@@ -58,17 +85,17 @@ model Question {
   updatedAt    DateTime @updatedAt
 
   // RELATIONS
-  lesson      Lesson   @relation(fields: [lessonId], references: [id])
-  userQuestions UserQuestion[] 
+  lesson        Lesson         @relation(fields: [lessonId], references: [id])
+  userQuestions UserQuestion[]
 }
 
 model UserQuestion {
-  id         String @id @default(auto()) @map("_id") @db.ObjectId
-  userId     String @db.ObjectId
-  questionId String @db.ObjectId
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId     String   @db.ObjectId
+  questionId String   @db.ObjectId
   starRating Int? // 0, 1, 2, 3 (null if not completed)
   timeSpent  Int?
-  isCorrect  Boolean @default(false)
+  isCorrect  Boolean  @default(false)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
@@ -78,20 +105,18 @@ model UserQuestion {
 }
 
 model UserLesson {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String   @db.ObjectId
-  lessonId  String   @db.ObjectId
-  totalStars Int     @default(0) // Sum of all stars from questions
-  completed  Boolean @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId     String   @db.ObjectId
+  lessonId   String   @db.ObjectId
+  totalStars Int      @default(0) // Sum of all stars from questions
+  completed  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   // RELATIONS
   user   User   @relation(fields: [userId], references: [id])
   lesson Lesson @relation(fields: [lessonId], references: [id])
 }
-
-
 
 model Badge {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
@@ -119,6 +144,3 @@ model UserBadge {
   user  User  @relation(fields: [userId], references: [id])
   badge Badge @relation(fields: [badgeId], references: [id])
 }
-
-
-

@@ -11,6 +11,8 @@ import { UserQuestionModule } from './user-question/user-question.module';
 import { UserLessonModule } from './user-lesson/user-lesson.module';
 import { BadgeModule } from './badge/badge.module';
 import { UserProgressModule } from './user-progress/user-progress.module';
+import { LessonModule } from './lesson/lesson.module';
+import { SubjectModule } from './subject/subject.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -28,6 +30,8 @@ import { UserProgressModule } from './user-progress/user-progress.module';
     UserLessonModule,
     BadgeModule,
     UserProgressModule,
+    LessonModule,
+    SubjectModule,
   ],
   controllers: [],
   providers: [PrismaService],
