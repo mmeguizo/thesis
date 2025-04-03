@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsString, IsNumber } from 'class-validator';
 
 export class CreateSubjectDto {
   @ApiProperty({
@@ -9,4 +9,14 @@ export class CreateSubjectDto {
   })
   @IsString()
   name: string;
+
+  @ApiProperty({
+    description: 'The grade level of the lesson',
+    example: 7,
+    required: true,
+  })
+  @IsNumber() // ✅ Ensure correct casing: "IsNumber"
+  gradeLevel: number;
+
+  
 }

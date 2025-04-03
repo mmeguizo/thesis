@@ -34,7 +34,7 @@ export class CreateQuestionDto {
   })
   @IsInt()
   @Min(7) // Minimum 10 seconds to prevent too-short time
-  gradeLevel: number;
+  questionLevel: number;
 
   @ApiProperty({
     description: 'Lesson ID of the question',

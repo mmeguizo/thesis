@@ -47,7 +47,7 @@ export class QuestionController {
             answer: '4',
             hint: 'Think about basic addition',
             tutorialLink: 'https://example.com/math-tutorial',
-            gradeLevel: 5,
+            questionLevel: 5,
             subject: 'Mathematics',
             createdAt: '2024-01-01T00:00:00.000Z',
             updatedAt: '2024-01-01T00:00:00.000Z',

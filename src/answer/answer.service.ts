@@ -55,6 +55,129 @@ export class AnswerService {
   
     return { isCorrect, starRating };
   }
+
+  // ... existing code ...
+  // async getTotalStarsForSpecificQuestions(userId :string, subjectId : string) {
+  //   const userQuestions = await this.prisma.userQuestion.findMany({
+  //     where: {
+  //       userId,
+  //       subjectId: subjectId, // Filter by question IDs
+  //     },
+  //     select: {
+  //       starRating: true,
+  //       question : {
+  //         select : {
+  //           lesson : {
+  //             select : {
+  //               id : true,
+  //               title: true,
+  //               subject : {
+  //                 select : {
+  //                   id : true,
+  //                   name : true
+  //                 }
+  //               }
+  //             }
+  //           },
+  //           id : true,
+  //           question : true,
+  //           difficulty : true,
+  //           questionLevel : true,
+  //         }
+          
+  //       }
+  //     },
+      
+  //   });
+
+  //   const totalStars = userQuestions.reduce((sum, userQuestion) => {
+  //     return sum + (userQuestion.starRating || 0);
+  //   }, 0);
+
+  //   return {
+  //     data : {
+  //         totalStarsAchieved: totalStars,
+  //         userData : userQuestions
+  //     },
+  //     success: true,
+  //     status : 200
+  //   };
+  // }
+  // ... existing code ...
+async getTotalStarsForSpecificQuestions(userId: string, subjectId: string): Promise<any> {
+  const userQuestions = await this.prisma.userQuestion.findMany({
+    where: {
+      userId,
+      subjectId: subjectId, // Filter by subject ID
+    },
+    select: {
+      starRating: true,
+      question: {
+        select: {
+          lesson: {
+            select: {
+              id: true,
+              title: true,
+              subject: {
+                select: {
+                  id: true,
+                  name: true,
+                },
+              },
+            },
+          },
+          id: true,
+          question: true,
+          difficulty: true,
+          questionLevel: true,
+        },
+      },
+    },
+  });
+
+  // Initialize the result object
+  const result = {
+    Easy: [],
+    Average: [],
+    Difficult: [],
+  };
+
+  // Populate the result object based on difficulty
+  userQuestions.forEach((userQuestion) => {
+    const { starRating, question } = userQuestion;
+    const { id: questionId, question: questionText, difficulty, questionLevel } = question;
+
+    // Convert difficulty to title case
+    const formattedDifficulty = difficulty.charAt(0).toUpperCase() + difficulty.slice(1).toLowerCase();
+
+    // Check if the difficulty is valid
+    if (result[formattedDifficulty]) {
+      // Push the formatted data into the corresponding difficulty array
+      result[formattedDifficulty].push({
+        questionId,
+        question: questionText,
+        lessonId: question.lesson.id,
+        lessonTitle: question.lesson.title,
+        subject: {
+          id: question.lesson.subject.id,
+          name: question.lesson.subject.name,
+        },
+        level: questionLevel,
+        star: starRating,
+      });
+    } else {
+      console.warn(`Unrecognized difficulty level: ${formattedDifficulty} for question ID: ${questionId}`);
+    }
+  });
+
+  return {
+    data: result,
+    success: true,
+    status: 200,
+  };
+}
+// ... existing code ...
+// ... existing code ...
   
 
 }

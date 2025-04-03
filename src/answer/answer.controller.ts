@@ -3,14 +3,13 @@ import { AnswerService } from './answer.service';
 import { SubmitAnswerDto } from './dto/submit-answer.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
-
+import { GetSpecificQuestionsStarsDto } from './dto/get-specific-questions-stars.dto';
 @ApiTags('answers')
 @Controller('answers')
 @UseGuards(JwtAuthGuard) // Only logged-in users can answer questions
 @ApiBearerAuth()
 export class AnswerController {
   constructor(private readonly answerService: AnswerService) {}
-
   @Post(':userId/submit')
   @ApiOperation({ summary: 'Submit an answer for a question' })
   @ApiResponse({ status: 201, description: 'Answer submitted successfully' })
@@ -22,4 +21,22 @@ export class AnswerController {
       data: result,
     };
   }
+
+
+  @Post('specific-questions-stars')
+  @ApiOperation({ summary: 'Get total stars for specific questions' })
+  @ApiResponse({ 
+    status: 200, 
+    description: 'Total stars retrieved successfully',
+    schema: {
+      example: {
+        totalStars: 10, // Example response
+      },
+    },
+  })
+  async getTotalStarsForSpecificQuestions(@Body() getSpecificQuestionsStarsDto: GetSpecificQuestionsStarsDto) {
+    const  {userID, subjectId} = getSpecificQuestionsStarsDto
+   return await this.answerService.getTotalStarsForSpecificQuestions(userID,subjectId);
+  }
+  
 }

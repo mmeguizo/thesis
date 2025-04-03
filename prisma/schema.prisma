@@ -37,7 +37,7 @@ model Subject {
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
+  gradeLevel Int
   // RELATIONS
   lessons      Lesson[]
   // question     Question[]
@@ -60,18 +60,18 @@ model Lesson {
 }
 
 model Question {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  lessonId     String   @db.ObjectId
-  question     String
-  answer       String
-  hint         String?
-  tutorialLink String?
-  gradeLevel   Int
-  isActive     Boolean  @default(true)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  timeLimit  Int? // Time limit in seconds (null if no time limit) // Time limit in seconds (e.g., 180 = 3 minutes)
-
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  lessonId      String   @db.ObjectId
+  question      String
+  answer        String
+  hint          String?
+  tutorialLink  String?
+  questionLevel Int
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  timeLimit     Int? // Time limit in seconds (null if no time limit) // Time limit in seconds (e.g., 180 = 3 minutes)
+  difficulty    String
   // RELATIONS
   // subjectId     String         @db.ObjectId
   lesson        Lesson         @relation(fields: [lessonId], references: [id])

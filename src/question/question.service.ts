@@ -81,6 +81,16 @@ export class QuestionService {
   async findOne(id: string) {
     const question = await this.prisma.question.findUnique({
       where: { id,   isActive: true  },
+      select :{
+        id : true,
+        lesson : {
+          select : {
+            title : true
+          }
+        },
+        question : true,
+        tutorialLink : true,
+      },
     });
 
     if (!question) {
