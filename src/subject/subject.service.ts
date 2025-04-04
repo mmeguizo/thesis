@@ -23,6 +23,13 @@ export class SubjectService {
     return subject;
   }
 
+  async findAllSubjectUnderGradeLevel(gradelevel: number) {
+    const allSubject = await this.prisma.subject.findMany({
+      where: { gradeLevel: gradelevel } // Use 'where' to filter by gradelevel
+    });
+    return allSubject; // Don't forget to return the result
+  }
+
   async update(id: string, updateSubjectDto: UpdateSubjectDto) {
     const subject = await this.prisma.subject.findUnique({ where: { id } });
     if (!subject) throw new NotFoundException('Subject not found');

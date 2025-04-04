@@ -33,7 +33,6 @@ export class CreateQuestionDto {
     required: true,
   })
   @IsInt()
-  @Min(7) // Minimum 10 seconds to prevent too-short time
   questionLevel: number;
 
   @ApiProperty({
@@ -43,6 +42,15 @@ export class CreateQuestionDto {
   })
   @IsMongoId()
   lessonId: string;
+
+
+  @ApiProperty({
+    description: 'Easy Average Difficult',
+    example: 'Easy',
+    required: true,
+  })
+  @IsString()
+  difficulty: string;
 
 
 }

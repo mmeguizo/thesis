@@ -20,7 +20,7 @@ export class LessonService {
     return this.prisma.lesson.create({
       data: {
         title: createLessonDto.title,
-        level: createLessonDto.level,
+        // level: createLessonDto.level,
         subjectId: createLessonDto.subjectId,
       },
       include: { subject: true }, // Include subject data in the response

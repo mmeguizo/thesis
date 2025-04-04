@@ -57,6 +57,21 @@ export class SubjectController {
     };
   }
 
+
+  @Get('gradelevel/:gradelevel')
+  @ApiOperation({ summary: 'All Subject Under a Grade Level' })
+  @ApiResponse({ status: 200, description: 'All Subject Under a Grade Level' })
+  async findAllSubjectUnderGradeLevel(@Param('gradelevel') gradelevel: number) {
+    const level = Number(gradelevel)
+    console.log(typeof level)
+    const subject = await this.subjectService.findAllSubjectUnderGradeLevel(level); // You might want to use gradelevel as well
+    return {
+      success: true,
+      message: 'All Subject retrieved successfully',
+      data: subject,
+    };
+  }
+
   @Patch(':id')
   @ApiOperation({ summary: 'Update a subject' })
   @ApiResponse({ status: 200, description: 'Subject updated successfully' })

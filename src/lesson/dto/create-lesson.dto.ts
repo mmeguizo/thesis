@@ -10,14 +10,12 @@ export class CreateLessonDto {
   @IsString()
   title: string;
 
-  @ApiProperty({
-    description: 'Level of the lesson',
-    example: 1,
-    required: true,
-  })
-  @IsInt()
-  @Min(1)
-  level: number;
+  // @ApiProperty({
+  //   description: 'Level of the lesson',
+  //   example: 1,
+  // })
+  // @IsInt()
+  // level: number;
 
   @ApiProperty({
     description: 'The ID of the subject this lesson belongs to',
